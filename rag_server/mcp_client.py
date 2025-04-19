@@ -2,23 +2,24 @@ from pydantic_ai import Agent
 from pydantic_ai.models.gemini import GeminiModel
 from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic_ai.mcp import MCPServerStdio
-
-model = GeminiModel("gemini-2.0-flash", provider=GoogleGLAProvider("AIzaSyClgqIJ8or4CrXqLQlw7UOnGgwKV9V5meY"))
+from dotenv import load_dotenv
+load_dotenv()
+import os
+model = GeminiModel("gemini-2.0-flash", provider=GoogleGLAProvider(os.environ["GOOGLE_API_KEY"]))
 mcp_server = MCPServerStdio("python", ["mcp_server.py"])
 agent = Agent(
     model=model,
-    system_prompt="Summarize financial reports as if you were a financial analyst and you must tell the figures in USD",
+    system_prompt="If there is a question about a financial report, Summarize financial reports as if you were a financial analyst and you must tell the figures in USD",
     mcp_servers=[mcp_server]
 )
 
-async def main():
-    print("yeah1")
+async def async_agent_runner(query):
     async with agent.run_mcp_servers():  
-        print("yeah2")
-        result = await agent.run('what is the financial status of the company Curry-Peck	year:1975	period: Annually ')
-        print("yeah3")
-    print(result.output)
+        result = await agent.run(query)
+    return result.output
 
-if __name__ == "__main__":
+def run_agent_once(query):
     import asyncio
-    asyncio.run(main())
+    return asyncio.run(async_agent_runner(query))
+
+print(run_agent_once("Hello Whats your name"))
