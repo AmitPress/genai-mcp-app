@@ -1,9 +1,10 @@
 # import libraries
+import asyncio
 import datetime
 import speech_recognition as sr
 import pyttsx3
 from datetime import datetime
-from mcp_client import run_agent_once
+from mcp_client import agent
 # Exceptions
 class NullQueryException(Exception):
     pass
@@ -47,12 +48,33 @@ def get_command():
         query = r.recognize_google(audio, language='en-us')
         if not query:
             raise NullQueryException
-        print(f"The Query: {query}")
     except NullQueryException:
         speak_up("No input found")
     except sr.UnknownValueError:
         query = None
     return query
+
+async def main():
+    count = Counter()
+    async with agent.run_mcp_servers():
+        while True:
+            if not count.value == 4:
+                q = get_command()
+                if count.value == 2:
+                    speak_up("How can I serve you")
+            else:
+                speak_up("Im gonna sleep")
+                break
+            if not q:
+                count()
+                continue    
+            else:
+                count.reset()    
+            print(f"Query: {q}")
+            response_from_agent = await agent.run(q)
+            print(f"Agent Response: {response_from_agent.output}")
+            speak_up(response_from_agent.output)
+
 
 if __name__ == '__main__':
     # initial setup
@@ -61,21 +83,4 @@ if __name__ == '__main__':
     print("Voice Assistant is active\n\n")
     speak_up(f"Hello My Dear Friend, How Can I Help You")
     greetings()
-    count = Counter()
-    while True:
-        if not count.value == 4:
-            q = get_command()
-            if count.value == 2:
-                speak_up("How can I serve you")
-        else:
-            speak_up("Im gonna sleep")
-            break
-        if not q:
-            count()
-            continue
-        else:
-            count.reset()
-        print(f"Query: {q}")
-        response_from_agent = run_agent_once(q)
-        print(f"Agent Response: {response_from_agent}")
-        speak_up(response_from_agent)
+    asyncio.run(main())
