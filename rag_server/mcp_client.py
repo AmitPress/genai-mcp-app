@@ -3,6 +3,7 @@ from pydantic_ai.models.gemini import GeminiModel
 from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic_ai.mcp import MCPServerStdio
 from dotenv import load_dotenv
+import asyncio
 load_dotenv()
 import os
 model = GeminiModel("gemini-2.0-flash", provider=GoogleGLAProvider(os.environ["GOOGLE_API_KEY"]))
@@ -19,7 +20,9 @@ async def async_agent_runner(query):
     return result.output
 
 def run_agent_once(query):
-    import asyncio
-    return asyncio.run(async_agent_runner(query))
-
-print(run_agent_once("Hello Whats your name"))
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return asyncio.run(async_agent_runner(query))
+    else:
+        return loop.create_task(async_agent_runner(query))
