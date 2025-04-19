@@ -14,15 +14,4 @@ agent = Agent(
     mcp_servers=[mcp_server]
 )
 
-async def async_agent_runner(query):
-    async with agent.run_mcp_servers():  
-        result = await agent.run(query)
-    return result.output
 
-def run_agent_once(query):
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        return asyncio.run(async_agent_runner(query))
-    else:
-        return loop.create_task(async_agent_runner(query))
