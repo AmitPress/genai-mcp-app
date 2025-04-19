@@ -4,6 +4,8 @@ In this project, I have demonstrated the use of latest Model Context Protocol or
 
 #### How to run the server
 
+> Please Note You will need `uv` and you can get that from `https://docs.astral.sh/uv/getting-started/installation/`
+
 To run the server,...
 * Clone this repository
 * Copy the contents of `.env.example` to `.env` ( the file is inside the folder call `rag_server` )
