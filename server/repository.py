@@ -1,5 +1,6 @@
 from db_conn import session, FinancialReport, BalanceSheet, IncomeStatement, EquityStatement, CashFlowStatement
 from dtos.financial_report_dto import FinancialReportDTO, BalanceSheetDTO, IncomeStatementDTO, EquityStatementDTO, CashFlowStatementDTO
+from sqlalchemy import func
 """ The Parameters must contain company name, year and period """
 
 """ Create A Financial Report """
@@ -20,7 +21,7 @@ def create_report(fr_dto: FinancialReportDTO):
 
 """ Get Financial Report """
 def find_report(company, year, period):
-    result = session.query(FinancialReport).filter(FinancialReport.company_name == company, FinancialReport.year == year, FinancialReport.period == period).first()
+    result = session.query(FinancialReport).filter(func.lower(FinancialReport.company_name) == company.lower(), FinancialReport.year == year, FinancialReport.period == period).first()
     return result
 
 
