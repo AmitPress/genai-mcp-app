@@ -6,7 +6,7 @@ app = FastMCP("Company Details")
 
 @app.tool()
 def company_details(company_name, year):
-    res = requests.get("http://localhost:5000/reports", json={"company_name": company_name, "year": year, "period": "Yearly"})
+    res = requests.get("http://localhost:5000/reports", json={"company_name": company_name, "year": year, "period": "Quarterly"})
     data = res.json()
     return str(data)
 
