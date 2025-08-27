@@ -2,6 +2,9 @@
 
 In this project, I have demonstrated the use of latest Model Context Protocol or MCP. The goal is to embed context to our AI agent so that it can perform some nice operations and can make a very good automation for our manual tasks.
 
+#### How it works
+![alt mcp_demo](./mcp.gif)
+
 #### How to run the server
 
 > Please Note You will need `uv` and you can get that from `https://docs.astral.sh/uv/getting-started/installation/`
